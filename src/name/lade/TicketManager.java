@@ -50,23 +50,27 @@ public class TicketManager {
         }
 
         Scanner deleteScanner = new Scanner(System.in);
-        System.out.println("Enter ID of ticket to delete");
-        int deleteID = deleteScanner.nextInt();
 
-        //Loop over all tickets. Delete the one with this ticket ID
         boolean found = false;
-        for (Ticket ticket : ticketQueue) {
-            if (ticket.getTicketID() == deleteID) {
-                found = true;
-                ticketQueue.remove(ticket);
-                System.out.println(String.format("Ticket %d deleted", deleteID));
-                break; //don't need loop any more.
+        do {
+            System.out.println("Enter ID of ticket to delete");
+            int deleteID = deleteScanner.nextInt();
+
+            //Loop over all tickets. Delete the one with this ticket ID
+
+            for (Ticket ticket : ticketQueue) {
+                if (ticket.getTicketID() == deleteID) {
+                    found = true;
+                    ticketQueue.remove(ticket);
+                    System.out.println(String.format("Ticket %d deleted", deleteID));
+                    break; //don't need loop any more.
+                }
             }
-        }
-        if (found == false) {
-            System.out.println("Ticket ID not found, no ticket deleted");
-            //TODO – re-write this method to ask for ID again if not found
-        }
+            if (!found) {
+                System.out.println("Ticket ID not found, no ticket deleted");
+            }
+        } while (!found);
+
         printAllTickets(ticketQueue);  //print updated list
 
     }
