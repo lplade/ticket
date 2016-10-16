@@ -107,7 +107,6 @@ public class TicketManager {
         }
     }
 
-
     protected static void addTicketInPriorityOrder(LinkedList<Ticket> tickets, Ticket newTicket) {
 
         //Logic: assume the list is either empty or sorted
