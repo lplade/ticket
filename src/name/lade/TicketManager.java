@@ -52,7 +52,16 @@ public class TicketManager {
         boolean found = false;
         do {
             System.out.println("Enter ID of ticket to delete");
-            int deleteID = deleteScanner.nextInt();
+            String input = deleteScanner.nextLine();
+            int deleteID;
+
+            // Check if input is a valid integer
+            if (isInteger(input)) {
+                deleteID = Integer.valueOf(input);
+            } else {
+                System.out.println("Please enter an integer");
+                continue; //stop here and re-ask for input
+            }
 
             //Loop over all tickets. Delete the one with this ticket ID
 
@@ -67,7 +76,7 @@ public class TicketManager {
             if (!found) {
                 System.out.println("Ticket ID not found, no ticket deleted");
             }
-        } while (!found);
+        } while (!found); //keep asking until we have found a valid ID
 
         printAllTickets(ticketQueue);  //print updated list
 
@@ -145,4 +154,23 @@ public class TicketManager {
         System.out.println(" ------- End of ticket list ----------");
 
     }
+
+    //from http://learn-java-by-example.com/java/check-java-string-integer/
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static boolean isInteger(String s) {
+        boolean isValidInteger = false;
+        try {
+            Integer.parseInt(s);
+
+            // s is a valid integer
+
+            isValidInteger = true;
+        }
+        catch (NumberFormatException ex) {
+            // s is not an integer
+        }
+
+        return isValidInteger;
+    }
+
 }
