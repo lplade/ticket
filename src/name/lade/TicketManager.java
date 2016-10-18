@@ -43,8 +43,8 @@ public class TicketManager {
                     break;
                 case 3:
                     //delete a ticket by searching for a substring of the issue
-                    //deleteTicketByIssue(ticketQueue);
-                    //TODO implement this
+                    deleteTicketByIssue(ticketQueue);
+
                     break;
                 case 4:
                     //Search for a ticket by name
@@ -76,36 +76,43 @@ public class TicketManager {
             return;
         }
 
+        ticketQueue = userInteractiveDeleteByID(ticketQueue);
+
+        printAllTickets(ticketQueue);  //print updated list
+
+    }
+
+    private static void deleteTicketByIssue(LinkedList<Ticket> ticketQueue){
+        if (ticketQueue.isEmpty()) {
+            System.out.println("No tickets to delete!");
+            return;
+        }
+
         Scanner deleteScanner = new Scanner(System.in);
 
-        boolean found = false;
-        do {
-            System.out.println("Enter ID of ticket to delete");
-            String input = deleteScanner.nextLine();
-            int deleteID;
+        System.out.println("Enter a string to search for");
+        String searchString = deleteScanner.nextLine();
 
-            // Check if input is a valid integer
-            if (isInteger(input)) {
-                deleteID = Integer.valueOf(input);
-            } else {
-                System.out.println("Please enter an integer");
-                continue; //stop here and re-ask for input
-            }
+        LinkedList<Ticket> matchQueue = searchTicketList(ticketQueue, searchString);
 
-            //Loop over all tickets. Delete the one with this ticket ID
+        if (matchQueue == null) {
+            System.out.println("No matching tickets!");
+            return;
+        }
 
-            for (Ticket ticket : ticketQueue) {
-                if (ticket.getTicketID() == deleteID) {
-                    found = true;
-                    ticketQueue.remove(ticket);
-                    System.out.println(String.format("Ticket %d deleted", deleteID));
-                    break; //don't need loop any more.
-                }
-            }
-            if (!found) {
-                System.out.println("Ticket ID not found, no ticket deleted");
-            }
-        } while (!found); //keep asking until we have found a valid ID
+        System.out.println(" ------- Matching tickets ----------");
+
+        for (Ticket t : matchQueue) {
+            System.out.println(t); //uses toString method in Ticket class
+        }
+        System.out.println(" ------- End of ticket list ----------");
+
+
+        //Now let the user choose one of the results to delete
+
+        //IntelliJ throws a duplicate code warning here, so we put that into another method
+        ticketQueue = userInteractiveDeleteByID(ticketQueue);
+
 
         printAllTickets(ticketQueue);  //print updated list
 
@@ -118,14 +125,14 @@ public class TicketManager {
         String searchString = searchScanner.nextLine();
 
         LinkedList<Ticket> foundQueue = searchTicketList(ticketQueue, searchString);
-        if (ticketQueue.size() == 0){
-            System.out.println("There are currently no tickets!");
+
+        if (foundQueue == null) {
+            System.out.println("No matching tickets!");
             return;
         }
 
         System.out.println(" ------- Matching tickets ----------");
 
-        assert foundQueue != null;
         for (Ticket t : foundQueue) {
             System.out.println(t); //uses toString method in Ticket class
         }
@@ -242,6 +249,42 @@ public class TicketManager {
         }
 
         return isValidInteger;
+    }
+
+    //common code shared between delete routines
+    private static LinkedList<Ticket> userInteractiveDeleteByID(LinkedList<Ticket> ticketQueue){
+        Scanner deleteScanner = new Scanner(System.in);
+
+        boolean found = false;
+        do {
+            System.out.println("Enter ID of ticket to delete");
+            String input = deleteScanner.nextLine();
+            int deleteID;
+
+            // Check if input is a valid integer
+            if (isInteger(input)) {
+                deleteID = Integer.valueOf(input);
+            } else {
+                System.out.println("Please enter an integer");
+                continue; //stop here and re-ask for input
+            }
+
+            //Loop over all tickets. Delete the one with this ticket ID
+
+            for (Ticket ticket : ticketQueue) {
+                if (ticket.getTicketID() == deleteID) {
+                    found = true;
+                    ticketQueue.remove(ticket);
+                    System.out.println(String.format("Ticket %d deleted", deleteID));
+                    break; //don't need loop any more.
+                }
+            }
+            if (!found) {
+                System.out.println("Ticket ID not found, no ticket deleted");
+            }
+        } while (!found); //keep asking until we have found a valid ID
+
+        return ticketQueue;
     }
 
 }
