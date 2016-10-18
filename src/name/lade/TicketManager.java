@@ -10,28 +10,57 @@ public class TicketManager {
 
         Scanner scan = new Scanner(System.in);
 
+        label:
         while (true) {
 
-            System.out.println("1. Enter Ticket\n2. Delete Ticket\n3. Display All Tickets\n4. Quit");
-            int task = Integer.parseInt(scan.nextLine());
-
-            if (task == 1) {
-                //Call addTickets, which will let us enter any number of new tickets
-                addTickets(ticketQueue);
-
-            } else if (task == 2) {
-                //delete a ticket
-                deleteTicket(ticketQueue);
-
-            } else if (task == 4) {
-                //Quit. Future prototype may want to save all tickets to a file
-                System.out.println("Quitting program");
-                break;
+            System.out.println(
+                    "1. Enter Ticket\n" +
+                    "2. Delete Ticket by ID\n" +
+                    "3. Delete Ticket by Issue\n" +
+                    "4. Search by Issue Name\n" +
+                    "5. Display All Tickets\n" +
+                    "6. Quit"
+            );
+            String inputString = scan.nextLine();
+            int task;
+            if (isInteger(inputString)) {
+                task = Integer.parseInt(inputString);
             } else {
-                //this will happen for 3 or any other selection that is a valid int
-                //TODO Program crashes if you enter anything else - please fix
-                //Default will be print all tickets
-                printAllTickets(ticketQueue);
+                System.out.println("Please enter a valid integer");
+                continue; //loop back to asking
+            }
+
+            switch (task) {
+                case 1:
+                    //Call addTickets, which will let us enter any number of new tickets
+                    addTickets(ticketQueue);
+
+                    break;
+                case 2:
+                    //delete a ticket by ID
+                    deleteTicketByID(ticketQueue);
+
+                    break;
+                case 3:
+                    //delete a ticket by searching for a substring of the issue
+                    //deleteTicketByIssue(ticketQueue);
+                    //TODO implement this
+                    break;
+                case 4:
+                    //Search for a ticket by name
+                    searchByName(ticketQueue);
+
+                    break;
+                case 6:
+                    //Quit. Future prototype may want to save all tickets to a file
+                    System.out.println("Quitting program");
+                    break label;
+                default:
+                    //this will happen for 5 or any other selection that is a valid int
+
+                    //Default will be print all tickets
+                    printAllTickets(ticketQueue);
+                    break;
             }
         }
 
@@ -39,7 +68,7 @@ public class TicketManager {
 
     }
 
-    protected static void deleteTicket(LinkedList<Ticket> ticketQueue) {
+    private static void deleteTicketByID(LinkedList<Ticket> ticketQueue) {
         printAllTickets(ticketQueue);   //display list for user
 
         if (ticketQueue.size() == 0) {    //no tickets!
@@ -82,8 +111,50 @@ public class TicketManager {
 
     }
 
+    private static void searchByName(LinkedList<Ticket> ticketQueue) {
+        Scanner searchScanner = new Scanner(System.in);
+
+        System.out.println("Enter a string to search for");
+        String searchString = searchScanner.nextLine();
+
+        LinkedList<Ticket> foundQueue = searchTicketList(ticketQueue, searchString);
+        if (ticketQueue.size() == 0){
+            System.out.println("There are currently no tickets!");
+            return;
+        }
+
+        System.out.println(" ------- Matching tickets ----------");
+
+        assert foundQueue != null;
+        for (Ticket t : foundQueue) {
+            System.out.println(t); //uses toString method in Ticket class
+        }
+        System.out.println(" ------- End of ticket list ----------");
+
+    }
+
+    //search a given list of tickets for a certain string in the description
+    private static LinkedList<Ticket> searchTicketList(LinkedList<Ticket> ticketQueue, String searchString){
+        if (ticketQueue.size() == 0) {
+            //System.out.println("No tickets!\n");
+            return null;
+        }
+
+        LinkedList<Ticket> foundQueue = new LinkedList<Ticket>();
+
+        //loop through all the tickets. if the substring is found, add that ticket to the new LinkedList
+        for (Ticket ticket: ticketQueue) {
+            if (ticket.getDescription().contains(searchString)) {
+                foundQueue.add(ticket);
+            }
+        }
+
+        //send the new LinkedList back to the caller
+        return foundQueue;
+    }
+
     //Move the adding ticket code to a method
-    protected static void addTickets(LinkedList<Ticket> ticketQueue) {
+    private static void addTickets(LinkedList<Ticket> ticketQueue) {
         Scanner sc = new Scanner(System.in);
 
         boolean moreProblems = true;
@@ -116,7 +187,7 @@ public class TicketManager {
         }
     }
 
-    protected static void addTicketInPriorityOrder(LinkedList<Ticket> tickets, Ticket newTicket) {
+    private static void addTicketInPriorityOrder(LinkedList<Ticket> tickets, Ticket newTicket) {
 
         //Logic: assume the list is either empty or sorted
 
@@ -144,7 +215,7 @@ public class TicketManager {
         tickets.addLast(newTicket);
     }
 
-    protected static void printAllTickets(LinkedList<Ticket> tickets) {
+    private static void printAllTickets(LinkedList<Ticket> tickets) {
         System.out.println(" ------- All open tickets ----------");
 
         for (Ticket t : tickets) {

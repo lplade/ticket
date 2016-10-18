@@ -2,7 +2,7 @@ package name.lade;
 
 import java.util.Date;
 
-public class Ticket {
+class Ticket {
 
     private int priority;
     private String reporter; //Stores person or department who reported issue
@@ -15,9 +15,9 @@ public class Ticket {
     private static int staticTicketIDCounter = 1;
 
     //The ID for each ticket - instance variable. Each Ticket will have it's own ticketID variable
-    protected int ticketID;
+    private int ticketID;
 
-    public Ticket(String desc, int p, String rep, Date date) {
+    Ticket(String desc, int p, String rep, Date date) {
         this.description = desc;
         this.priority = p;
         this.reporter = rep;
@@ -26,7 +26,7 @@ public class Ticket {
         staticTicketIDCounter++;
     }
 
-    protected int getPriority() {
+    int getPriority() {
         return priority;
     }
 
@@ -35,8 +35,12 @@ public class Ticket {
                 " Reported by: " + this.reporter + " Reported on: " + this.dateReported);
     }
 
-    public int getTicketID() {
+    int getTicketID() {
         return ticketID;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }
