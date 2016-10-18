@@ -7,6 +7,7 @@ public class TicketManager {
     public static void main(String[] args) {
 
         LinkedList<Ticket> ticketQueue = new LinkedList<Ticket>();
+        LinkedList<ResolvedTicket> resolvedList = new LinkedList<ResolvedTicket>();
 
         Scanner scan = new Scanner(System.in);
 
@@ -38,12 +39,12 @@ public class TicketManager {
                     break;
                 case 2:
                     //delete a ticket by ID
-                    deleteTicketByID(ticketQueue);
+                    deleteTicketByID(ticketQueue, resolvedList);
 
                     break;
                 case 3:
                     //delete a ticket by searching for a substring of the issue
-                    deleteTicketByIssue(ticketQueue);
+                    deleteTicketByIssue(ticketQueue, resolvedList);
 
                     break;
                 case 4:
@@ -60,6 +61,7 @@ public class TicketManager {
 
                     //Default will be print all tickets
                     printAllTickets(ticketQueue);
+                    printResolvedTickets(resolvedList);
                     break;
             }
         }
@@ -68,7 +70,7 @@ public class TicketManager {
 
     }
 
-    private static void deleteTicketByID(LinkedList<Ticket> ticketQueue) {
+    private static void deleteTicketByID(LinkedList<Ticket> ticketQueue, LinkedList<ResolvedTicket> resolvedList) {
         printAllTickets(ticketQueue);   //display list for user
 
         if (ticketQueue.size() == 0) {    //no tickets!
@@ -76,13 +78,13 @@ public class TicketManager {
             return;
         }
 
-        ticketQueue = userInteractiveDeleteByID(ticketQueue);
+        userInteractiveDeleteByID(ticketQueue, resolvedList);
 
         printAllTickets(ticketQueue);  //print updated list
 
     }
 
-    private static void deleteTicketByIssue(LinkedList<Ticket> ticketQueue){
+    private static void deleteTicketByIssue(LinkedList<Ticket> ticketQueue, LinkedList<ResolvedTicket> resolvedList){
         if (ticketQueue.isEmpty()) {
             System.out.println("No tickets to delete!");
             return;
@@ -111,7 +113,7 @@ public class TicketManager {
         //Now let the user choose one of the results to delete
 
         //IntelliJ throws a duplicate code warning here, so we put that into another method
-        ticketQueue = userInteractiveDeleteByID(ticketQueue);
+        userInteractiveDeleteByID(ticketQueue, resolvedList);
 
 
         printAllTickets(ticketQueue);  //print updated list
@@ -229,8 +231,19 @@ public class TicketManager {
             System.out.println(t); //Write a toString method in Ticket class
             //println will try to call toString on its argument
         }
+
         System.out.println(" ------- End of ticket list ----------");
 
+    }
+
+    private static void printResolvedTickets(LinkedList<ResolvedTicket> resolvedList) {
+        System.out.println(" ------- Resolved tickets ------------");
+
+        for (Ticket rt : resolvedList) {
+            System.out.println(rt); //subclass toString method is used
+        }
+
+        System.out.println(" ------- End of ticket list ----------");
     }
 
     //from http://learn-java-by-example.com/java/check-java-string-integer/
@@ -252,7 +265,7 @@ public class TicketManager {
     }
 
     //common code shared between delete routines
-    private static LinkedList<Ticket> userInteractiveDeleteByID(LinkedList<Ticket> ticketQueue){
+    private static void userInteractiveDeleteByID(LinkedList<Ticket> ticketQueue, LinkedList<ResolvedTicket> resolvedList){
         Scanner deleteScanner = new Scanner(System.in);
 
         boolean found = false;
@@ -274,6 +287,29 @@ public class TicketManager {
             for (Ticket ticket : ticketQueue) {
                 if (ticket.getTicketID() == deleteID) {
                     found = true;
+
+                    //interactive prompt for resolution info
+                    //TODO split into own method
+                    System.out.println("What was the resolution to this issue?");
+                    String resInput = deleteScanner.nextLine();
+                    Date dateResolved = new Date(); //defaults to today
+
+                    //Instance a new resolved ticket
+                    //String desc, int p, String rep, Date dateInit, int id, String res, Date dateRes
+                    ResolvedTicket rt = new ResolvedTicket(
+                            ticket.getDescription(),
+                            ticket.getPriority(),
+                            ticket.getReporter(),
+                            ticket.getDateReported(),
+                            ticket.getTicketID(),
+                            resInput,
+                            dateResolved
+                    );
+
+                    //add the old ticket into the resolved list
+                    resolvedList.add(rt);
+
+                    //then purge the ticket from the active list
                     ticketQueue.remove(ticket);
                     System.out.println(String.format("Ticket %d deleted", deleteID));
                     break; //don't need loop any more.
@@ -284,7 +320,6 @@ public class TicketManager {
             }
         } while (!found); //keep asking until we have found a valid ID
 
-        return ticketQueue;
     }
 
 }
