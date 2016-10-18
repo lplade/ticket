@@ -6,6 +6,9 @@ public class TicketManager {
 
     public static void main(String[] args) {
 
+        //TODO Problem 7 read in open_tickets.txt
+        //TODO Problem 8 figure out last ticketID, set that in Ticket
+
         LinkedList<Ticket> ticketQueue = new LinkedList<Ticket>();
         LinkedList<ResolvedTicket> resolvedList = new LinkedList<ResolvedTicket>();
 
@@ -65,6 +68,11 @@ public class TicketManager {
                     break;
             }
         }
+
+        //TODO Problem 6 write all open ticket data to open_tickets.txt
+        //     Use new method to set up data for storage
+        //TODO Problem 6 write all resolved tickets to Resolved_tickets_as_of_TODAYSDATE.txt
+        //     Use new method to set up data for storage
 
         scan.close();
 

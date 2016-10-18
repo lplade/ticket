@@ -12,6 +12,9 @@ class Ticket {
     //STATIC Counter - accessible to all Ticket objects.
     //If any Ticket object modifies this counter, all Ticket objects will have the modified value
     //Make it private - only Ticket objects should have access
+
+    //TODO Problem 8 set this to the next value upon file read
+    //     New setter method?
     private static int staticTicketIDCounter = 1;
 
     //The ID for each ticket - instance variable. Each Ticket will have it's own ticketID variable
@@ -29,6 +32,7 @@ class Ticket {
 
     //Overload the constructor so we can set a specific ID. Be careful with this!
     // Could break the list! It is used only for the subclass
+    //TODO we can also use this on file read to rebuild the ticketQueue
     Ticket(String desc, int p, String rep, Date date, int ID){
         this.description = desc;
         this.priority = p;
@@ -41,19 +45,19 @@ class Ticket {
         return priority;
     }
 
-    public int getTicketID() {
+    int getTicketID() {
         return ticketID;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    public String getReporter() {
+    String getReporter() {
         return reporter;
     }
 
-    public Date getDateReported() {
+    Date getDateReported() {
         return dateReported;
     }
 
@@ -62,9 +66,7 @@ class Ticket {
                 " Reported by: " + this.reporter + " Reported on: " + this.dateReported);
     }
 
-
-
-
+    //TODO Problem 6 method to format for data storage (CSV? XML? JSON?)
 }
 
 class ResolvedTicket extends Ticket {
@@ -83,4 +85,6 @@ class ResolvedTicket extends Ticket {
                 " Reported by: " + this.reporter + " Reported on: " + this.dateReported + "\n    Resolution: " +
                 this.resolution + " Date resolved: " + this.dateResolved );
     }
+
+    //TODO Problem 6 method to format for data storage (CSV? XML? JSON?)
 }
