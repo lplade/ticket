@@ -1,3 +1,5 @@
 .idea
 *.iml
 out
+open_tickets.txt
+Resolved_tickets_as_of_*
